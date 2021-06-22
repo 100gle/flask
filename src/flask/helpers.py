@@ -1,3 +1,6 @@
+# flask/helper.py 模块主要存放类似于 utils 之类的辅助性方法
+
+
 import os
 import pkgutil
 import socket
@@ -30,6 +33,9 @@ def get_env() -> str:
     """Get the environment the app is running in, indicated by the
     :envvar:`FLASK_ENV` environment variable. The default is
     ``'production'``.
+
+    探测APP所在的环境，如果没有指定 FLASK_ENV，默认为生产环境
+
     """
     return os.environ.get("FLASK_ENV") or "production"
 
@@ -39,6 +45,9 @@ def get_debug_flag() -> bool:
     by the :envvar:`FLASK_DEBUG` environment variable. The default is
     ``True`` if :func:`.get_env` returns ``'development'``, or ``False``
     otherwise.
+
+    探测 FLASK_DEBUG 是否开启
+
     """
     val = os.environ.get("FLASK_DEBUG")
 
@@ -54,6 +63,8 @@ def get_load_dotenv(default: bool = True) -> bool:
     files.
 
     :param default: What to return if the env var isn't set.
+
+    探测是否跳过 dotenv 包加载项，使用 FLASK_SKIP_DOTENV 进行控制，默认为 True
     """
     val = os.environ.get("FLASK_SKIP_DOTENV")
 
@@ -73,6 +84,11 @@ def stream_with_context(
     memory leaks with badly written WSGI middlewares.  The downside is that if
     you are using streamed responses, the generator cannot access request bound
     information any more.
+
+    stream 流上下文
+
+    当响应在服务器上启动时，请求上下文消失。这样做是为了提高效率，并减少编写糟糕的 WSGI 中间件时遇到内存泄漏的可能性。
+    缺点是如果您使用流式响应，生成器将无法再访问请求绑定信息。
 
     This function however can help you keep the context around for longer::
 

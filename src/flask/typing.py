@@ -1,3 +1,5 @@
+# 基于 Typing 标准库进一步封装，属于 Flask 的类型，类似于自定义类型
+
 import typing as t
 
 

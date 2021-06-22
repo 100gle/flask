@@ -1,3 +1,10 @@
+# Flask 日志封装
+# Flask 日志底层基于 Logging 库进行二次封装，主要存在几个方法：
+# 1. `wsgi_errors_stream()`
+# 2. `has_level_handler()`
+# 3. `create_logger()`
+
+
 import logging
 import sys
 import typing as t
@@ -15,11 +22,15 @@ def wsgi_errors_stream() -> t.TextIO:
     """Find the most appropriate error stream for the application. If a request
     is active, log to ``wsgi.errors``, otherwise use ``sys.stderr``.
 
+    适用于大多数 Flask 实例应用的错误流，如果存在请求则会使用 `wsgi.errors`，否则默认为 `sys.stder`
+
     If you configure your own :class:`logging.StreamHandler`, you may want to
     use this for the stream. If you are using file or dict configuration and
     can't import this directly, you can refer to it as
     ``ext://flask.logging.wsgi_errors_stream``.
     """
+
+
     return request.environ["wsgi.errors"] if request else sys.stderr
 
 
@@ -50,6 +61,7 @@ default_handler.setFormatter(
 )
 
 
+# 创建 Flask Logger 实例工厂
 def create_logger(app: "Flask") -> logging.Logger:
     """Get the Flask app's logger and configure it if needed.
 
@@ -65,9 +77,11 @@ def create_logger(app: "Flask") -> logging.Logger:
     """
     logger = logging.getLogger(app.name)
 
+    # 开启 Debug 模式并未设置 Logger Level 时使用 DEBUG 模式
     if app.debug and not logger.level:
         logger.setLevel(logging.DEBUG)
 
+    # 不存在 Level 处理器则使用默认 Handler
     if not has_level_handler(logger):
         logger.addHandler(default_handler)
 

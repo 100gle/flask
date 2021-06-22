@@ -1,3 +1,6 @@
+# Flask 类视图模块
+
+
 import typing as t
 
 from .globals import request
@@ -16,6 +19,10 @@ class View:
     do not have to be passed to the :meth:`~flask.Flask.add_url_rule`
     method explicitly::
 
+    使用视图函数的替代方法。一个子类必须实现 `dispatch_request` 分发方法 ，它被来自 URL 路由系统的视图参数调用。
+    如果提供了 `methods` 属性，则方法不必显式传递给 `Flask.add_url_rule` 方法
+
+
         class MyView(View):
             methods = ['GET']
 
@@ -27,6 +34,8 @@ class View:
     When you want to decorate a pluggable view you will have to either do that
     when the view function is created (by wrapping the return value of
     :meth:`as_view`) or you can use the :attr:`decorators` attribute::
+
+    如果需要为每个分发的方法增加额外的装饰器，可以使用 `decorators` 属性。
 
         class SecretView(View):
             methods = ['GET']

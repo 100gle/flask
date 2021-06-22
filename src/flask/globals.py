@@ -49,11 +49,24 @@ def _find_app():
 
 
 # context locals
+
+# 重点：所有 Local 对象的源码都来自 Werkzeug，采用代理模式进行 Wrap。
+# 请求上下文栈
 _request_ctx_stack = LocalStack()
+
+# flask 实例上下文栈
 _app_ctx_stack = LocalStack()
+
+# 本地代理
 current_app: "Flask" = LocalProxy(_find_app)  # type: ignore
+
+# 请求
 request: "Request" = LocalProxy(partial(_lookup_req_object, "request"))  # type: ignore
+
+# 会话
 session: "SessionMixin" = LocalProxy(  # type: ignore
     partial(_lookup_req_object, "session")
 )
-g: "_AppCtxGlobals" = LocalProxy(partial(_lookup_app_object, "g"))  # type: ignore
+
+# g全局变量
+:g: "_AppCtxGlobals" = LocalProxy(partial(_lookup_app_object, "g"))  # type: ignore
